@@ -17,6 +17,7 @@ def parse_line(line):
 
 def password_follows_policy(parsed_line):
     first_position,second_position, letter, password = parsed_line
+    # Our password string includes a whitespace at the first position so the index needs no adjustment
     letter_in_place = int(password[first_position]==letter) + int(password[second_position]==letter)
     return letter_in_place == 1
 
