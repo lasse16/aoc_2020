@@ -29,27 +29,27 @@ def valid_birth_year(value_string):
     return re.search('\d{4}', value_string) and int(value_string) in range(1920,2003)
 
 def valid_issued_year(value_string):
-        return re.search('\d{4}', value_string) and int(value_string) in range(2010,2021)
+    return re.search('\d{4}', value_string) and int(value_string) in range(2010,2021)
 
 def valid_expiration_year(value_string):
     return re.search('\d{4}', value_string) and int(value_string) in range(2020,2031)
 
 def valid_height(value_string):
-        if not re.search('\d{2,3}[a-z]{2}', value_string):
-            return False
-        unit = value_string[-2:]
-        value = int(value_string[:-2])
-        if unit == "in":
-            return value in range(50,78)
-        elif unit == "cm":
-            return value in range(150,194)
+    if not re.search('\d{2,3}[a-z]{2}', value_string):
         return False
+    unit = value_string[-2:]
+    value = int(value_string[:-2])
+    if unit == "in":
+        return value in range(50,77)
+    elif unit == "cm":
+        return value in range(150,194)
+    return False
 
 def valid_hair_color(value_string):
     return re.search('#[0-9a-f]{6}', value_string)
 
 def valid_eye_color(value_string):
-        return value_string in ["amb", "blu", "brn", "gry", "grn", "hzl", "oth"]
+    return value_string in ["amb", "blu", "brn", "gry", "grn", "hzl", "oth"]
 
 def valid_pid(value_string):
     return re.search('\d{9}',value_string)
