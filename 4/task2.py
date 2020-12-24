@@ -25,15 +25,16 @@ def is_valid_passport(passport):
         return all_fields_valid
     return False
 
-def is_valid_value(field_type, value_string):
-    # This is making me puke in terms of readibility, thankful for any fixes
-    if(field_type == "byr"):
-        return re.search('\d{4}', value_string) and int(value_string) in range(1920,2003)
-    elif(field_type == "iyr"):
+def valid_birth_year(value_string):
+    return re.search('\d{4}', value_string) and int(value_string) in range(1920,2003)
+
+def valid_issued_year(value_string):
         return re.search('\d{4}', value_string) and int(value_string) in range(2010,2021)
-    elif(field_type == "eyr"):
-        return re.search('\d{4}', value_string) and int(value_string) in range(2020,2031)
-    elif(field_type == "hgt"):
+
+def valid_expiration_year(value_string):
+    return re.search('\d{4}', value_string) and int(value_string) in range(2020,2031)
+
+def valid_height(value_string):
         if not re.search('\d{2,3}[a-z]{2}', value_string):
             return False
         unit = value_string[-2:]
@@ -43,16 +44,31 @@ def is_valid_value(field_type, value_string):
         elif unit == "cm":
             return value in range(150,194)
         return False
-    elif field_type == "hcl":
-        return re.search('#[0-9a-f]{6}', value_string)
-    elif field_type == "ecl":
-        return value_string in ["amb", "blu", "brn", "gry", "grn", "hzl", "oth"]
-    elif field_type == "pid":
-        return re.search('\d{9}',value_string)
-    elif field_type == "cid":
-        return True
-    else:
-        return False
 
+def valid_hair_color(value_string):
+    return re.search('#[0-9a-f]{6}', value_string)
+
+def valid_eye_color(value_string):
+        return value_string in ["amb", "blu", "brn", "gry", "grn", "hzl", "oth"]
+
+def valid_pid(value_string):
+    return re.search('\d{9}',value_string)
+
+def valid_cid(value_string):
+    return True
+
+def is_valid_value(field_type, value_string):
+    return field_type_based_validation.get(field_type, False)(value_string)
+
+field_type_based_validation = {
+    "byr": valid_birth_year,
+    "iyr": valid_issued_year,
+    "eyr": valid_expiration_year,
+    "hgt": valid_height,
+    "hcl": valid_hair_color,
+    "ecl": valid_eye_color,
+    "pid": valid_pid,
+    "cid": valid_cid
+}
 if __name__ == "__main__":
     print(main())
