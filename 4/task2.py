@@ -4,6 +4,7 @@ import re
 necessary_fields = set(["byr", "iyr", "eyr", "hgt", "hcl", "ecl", "pid"])
 optional_fields = set(["cid"])
 
+# Attempted soution, not finding the error
 def main():
     input_path = sys.argv[1]
 
@@ -19,9 +20,8 @@ def is_valid_passport(passport):
     necessary_fields_present = False not in [field in present_fields for field in necessary_fields]
     if necessary_fields_present:
         if '' in passport_entries: passport_entries.remove('')
-        all_fields_valid = False not in [is_valid_value(*entry.split(':')) for entry in passport_entries]
-        if all_fields_valid:
-            print(passport)
+        validated_fields = [is_valid_value(*entry.split(':')) for entry in passport_entries]
+        all_fields_valid = False not in validated_fields
         return all_fields_valid
     return False
 
@@ -46,19 +46,21 @@ def valid_height(value_string):
     return False
 
 def valid_hair_color(value_string):
-    return re.search('#[0-9a-f]{6}', value_string)
+    valid_color = bool(re.search('#[0-9a-f]{6}', value_string))
+    return valid_color
 
 def valid_eye_color(value_string):
     return value_string in ["amb", "blu", "brn", "gry", "grn", "hzl", "oth"]
 
 def valid_pid(value_string):
-    return re.search('\d{9}',value_string)
+    return bool(re.search('\d{9}',value_string))
 
 def valid_cid(value_string):
     return True
 
 def is_valid_value(field_type, value_string):
-    return field_type_based_validation.get(field_type, False)(value_string)
+    value_string = value_string.strip()
+    return field_type_based_validation.get(field_type, lambda x: False)(value_string)
 
 field_type_based_validation = {
     "byr": valid_birth_year,
