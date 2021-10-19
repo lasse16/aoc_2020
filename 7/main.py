@@ -15,7 +15,7 @@ def main():
     while possible_containers != prev_possible_containers:
         prev_possible_containers = possible_containers.copy()
         for containing_bag, contained_bags in containing_rule_set.items():
-            for bag in possible_containers:
+            for bag in prev_possible_containers:
                 if bag in contained_bags:
                     possible_containers.add(containing_bag)
 
