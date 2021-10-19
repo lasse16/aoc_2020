@@ -44,7 +44,7 @@ def parse_input_into_rule_set(input_file):
 
 
 def get_one_bag_type(words):
-    bag_amount = words[0]
+    # bag_amount = words[0]
     bag_color = " ".join(words[1:3])
     return words[4:], BagType(bag_color)
 
