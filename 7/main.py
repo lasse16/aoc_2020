@@ -19,7 +19,12 @@ def main():
                 if bag in contained_bags:
                     possible_containers.add(containing_bag)
 
-    print(len(possible_containers))
+    possible_containers.remove(target)
+    print(
+        "Shiny Gold is contained in [ {} ] possible containers".format(
+            len(possible_containers)
+        )
+    )
 
 
 def parse_input_into_rule_set(input_file):
