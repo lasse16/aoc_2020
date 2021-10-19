@@ -9,7 +9,7 @@ class BagType:
 def main():
     input_file = "/home/lasse/src/aoc_2020/7/input.txt"
     containing_rule_set = parse_input_into_rule_set(input_file)
-    target = BagType("shiny_gold")
+    target = BagType("shiny gold")
     possible_containers = {target}
     prev_possible_containers = set()
     while possible_containers != prev_possible_containers:
