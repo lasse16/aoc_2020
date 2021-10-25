@@ -2,18 +2,18 @@ def main():
     input = "input.txt"
     numbers_and_turns_spoken, prev_number = parse_input(input)
     is_starting_number = True
-    turn_limit = 2021
-    for turn in range(len(numbers_and_turns_spoken) + 1, turn_limit):
+    turn_limit = 2020
+    for turn in range(len(numbers_and_turns_spoken), turn_limit):
         last_turn_previous_number_spoken = numbers_and_turns_spoken.get(prev_number, 0)
         number_spoken = -1
         if not last_turn_previous_number_spoken or is_starting_number:
             is_starting_number = False
             number_spoken = 0
         else:
-            number_spoken = turn - 1 - last_turn_previous_number_spoken
-        numbers_and_turns_spoken[prev_number] = turn - 1
+            number_spoken = turn - last_turn_previous_number_spoken
+        numbers_and_turns_spoken[prev_number] = turn
         prev_number = number_spoken
-    numbers_and_turns_spoken[prev_number] = turn_limit - 1
+    numbers_and_turns_spoken[prev_number] = turn_limit
     print(numbers_and_turns_spoken)
     print(prev_number)
 
