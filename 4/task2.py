@@ -1,4 +1,3 @@
-import sys
 import re
 
 necessary_fields = set(["byr", "iyr", "eyr", "hgt", "hcl", "ecl", "pid"])
@@ -6,30 +5,46 @@ optional_fields = set(["cid"])
 
 # Attempted soution, not finding the error
 def main():
-    input_path = sys.argv[1]
+    input_path = "input.txt"
 
+    passports = parse_input_into_passports(input_path)
+    passports_with_required_fields = [
+        passport for passport in passports if are_required_fields_present(passport)
+    ]
+    valid_passports = [
+        passport
+        for passport in passports_with_required_fields
+        if are_all_fields_valid(passport)
+    ]
+    return len(valid_passports)
+
+
+def are_all_fields_valid(passport):
+    passport_entries = passport.split(" ")
+    valid_fields = []
+    for entry in passport_entries:
+        field_type, value = entry.split(":")
+        valid_fields.append(is_valid_value(field_type, value))
+    return all(valid_fields)
+
+
+def parse_input_into_passports(input):
     passports = []
-    with open(input_path, "r") as file:
-        passports = file.read().split("\n\n")
-    return [is_valid_passport(passport) for passport in passports].count(True)
+    with open(input, "r") as file:
+        passports = [
+            passport.replace("\n", " ", -1).strip()
+            for passport in file.read().split("\n\n")
+        ]
+    return passports
 
 
-def is_valid_passport(passport):
-    passport = passport.replace("\n", " ", -1)
+def are_required_fields_present(passport):
     passport_entries = passport.split(" ")
     present_fields = [entry[:3] for entry in passport_entries]
-    necessary_fields_present = False not in [
-        field in present_fields for field in necessary_fields
-    ]
-    if necessary_fields_present:
-        if "" in passport_entries:
-            passport_entries.remove("")
-        validated_fields = [
-            is_valid_value(*entry.split(":")) for entry in passport_entries
-        ]
-        all_fields_valid = False not in validated_fields
-        return all_fields_valid
-    return False
+    necessary_fields_present = all(
+        [field in present_fields for field in necessary_fields]
+    )
+    return necessary_fields_present
 
 
 def valid_birth_year(value_string):
@@ -74,7 +89,6 @@ def valid_cid(value_string):
 
 
 def is_valid_value(field_type, value_string):
-    value_string = value_string.strip()
     return field_type_based_validation.get(field_type, lambda x: False)(value_string)
 
 
