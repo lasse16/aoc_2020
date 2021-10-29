@@ -1,53 +1,57 @@
-from dataclasses import dataclass
-
-
-@dataclass
-class MemorySaveInstruction:
-    value: int
-    adress: int
-
-    def execute(self, bit_mask, memory_book):
-        return bit_mask, memory_book
-
-
-@dataclass
-class MaskUpdateInstruction:
-    value: str
-
-    def execute(self, bit_mask, memory_book):
-        return bit_mask, memory_book
+import re
 
 
 def main():
     input = "input.txt"
     instructions = parse_input_into_instructions(input)
-    bit_mask = "X" * 36
+    bitmask = "X" * 36
     memory = dict()
     for instruction in instructions:
-        bit_mask, memory = instruction.execute(bit_mask, memory)
-
+        instruction_type, value = instruction
+        if instruction_type.startswith("mem"):
+            address = get_address_from_instruction_type(instruction_type)
+            value = int(value)
+            memory[address] = update_value_with_bitmask(value, bitmask)
+        elif instruction_type == "mask":
+            bitmask = value
     print(sum(memory.values()))
+
+
+def update_value_with_bitmask(value, bitmask):
+    value_in_binary = "{0:036b}".format(value)
+    output = ""
+    for value_char, mask_char in zip(value_in_binary, bitmask):
+        if mask_char != "X":
+            output += mask_char
+        else:
+            output += value_char
+    return int(output, 2)
+
+
+def update_bitmask(bitmask, update_to_apply):
+    output = ""
+    for mask_char, update_char in zip(bitmask, update_to_apply):
+        if update_char != "X":
+            output += update_char
+        else:
+            output += mask_char
+    return output
+
+
+def get_address_from_instruction_type(instruction_type):
+    pattern = r"\[(\d+)\]"
+    address = re.search(pattern, instruction_type).group(1)
+    return int(address)
 
 
 def parse_input_into_instructions(input):
     instructions = []
     with open(input) as file:
-        lines = [line.strip() for line in file]
-        for line in lines:
-            instruction_type, instruction_value = line.split("=")
+        for line in file:
+            instruction_type, value = line.split("=")
             instruction_type = instruction_type.strip()
-            instruction_value = instruction_value.strip()
-            if instruction_type.startswith("mem"):
-                value = int(instruction_value)
-                adress = int(instruction_type.partition("[")[2].partition("]")[0])
-                instruction = MemorySaveInstruction(value, adress)
-                instructions.append(instruction)
-            elif instruction_type.startswith("mask"):
-                value = instruction_value
-                instruction = MaskUpdateInstruction(value)
-                instructions.append(instruction)
-            else:
-                raise Exception()
+            value = value.strip()
+            instructions.append((instruction_type, value))
     return instructions
 
 
