@@ -3,7 +3,6 @@ import re
 necessary_fields = set(["byr", "iyr", "eyr", "hgt", "hcl", "ecl", "pid"])
 optional_fields = set(["cid"])
 
-# Attempted soution, not finding the error
 def main():
     input_path = "input.txt"
 
