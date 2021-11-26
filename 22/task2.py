@@ -1,25 +1,26 @@
-played_decks = []
-
-
 def main():
     input = "input.txt"
     deck_player1, deck_player2 = parse_input_into_decks(input)
 
+    played_decks = []
     while deck_player1 and deck_player2:
-        deck_player1, deck_player2 = play_one_round(deck_player1, deck_player2)
+        deck_player1, deck_player2 = play_one_round(
+            deck_player1, deck_player2, played_decks
+        )
     score = calculate_score(deck_player1, deck_player2)
     print(score)
 
 
-def play_one_round(deck1, deck2):
-    if round_already_played(deck1, deck2):
+def play_one_round(deck1, deck2, played_decks):
+    round = convert_to_storage_notation(deck1, deck2)
+    if round in played_decks:
         return deck1, []
-    played_decks.append((deck1, deck2))
+    played_decks.append(round)
 
     player1_card = deck1.pop(0)
     player2_card = deck2.pop(0)
 
-    if player1_card >= len(deck1) and player2_card >= len(deck2):
+    if player1_card <= len(deck1) and player2_card <= len(deck2):
         player1_won = recursive_combat((player1_card, deck1), (player2_card, deck2))
     else:
         player1_won = player1_card > player2_card
@@ -35,11 +36,19 @@ def play_one_round(deck1, deck2):
 
 
 def recursive_combat(player1, player2):
-    pass
+    player1_len, original_deck1 = player1
+    player2_len, original_deck2 = player2
+
+    deck1 = original_deck1[:player1_len]
+    deck2 = original_deck2[:player2_len]
+    played_decks = []
+    while deck1 and deck2:
+        deck1, deck2 = play_one_round(deck1, deck2, played_decks)
+    return bool(deck1)
 
 
-def round_already_played(deck1, deck2):
-    return (deck1, deck2) in played_decks
+def convert_to_storage_notation(deck1, deck2):
+    return f'{"".join([str(card) for card in deck1])}|{"".join([str(card) for card in deck2])}'
 
 
 def calculate_score(deck1, deck2):
