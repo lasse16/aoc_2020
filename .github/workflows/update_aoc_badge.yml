@@ -1,0 +1,19 @@
+name: Update Advent of Code Badge
+on: [push]
+jobs:
+  update:
+    runs-on: ubuntu-20.04
+    steps:
+      - uses: actions/checkout@v2               
+  
+  
+      - uses: J0B10/aoc-badges-action@v3.0.0
+        with:
+          session: ${{ secrets.AOC_SESSION }} 
+          userid:  ${{ secrets.AOC_USER_ID }}
+          year: 2020
+          
+      - uses: stefanzweifel/git-auto-commit-action@v4   
+        with:
+          commit_message: Update readme badges
+          file_pattern: README.md
